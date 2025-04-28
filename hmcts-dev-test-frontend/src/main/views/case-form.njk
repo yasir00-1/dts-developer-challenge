@@ -1,0 +1,74 @@
+{% extends "template.njk" %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">
+    {% if caseItem.id %}
+      Edit Case
+    {% else %}
+      Create a New Case
+    {% endif %}
+  </h1>
+
+  {% if error %}
+    <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li>{{ error }}</li>
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
+  <form method="POST" action="{{ action }}" novalidate>
+    
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="caseNumber">
+        Case Number
+      </label>
+      <input class="govuk-input" id="caseNumber" name="caseNumber" type="text" value="{{ caseItem.caseNumber or '' }}" required>
+    </div>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="title">
+        Title
+      </label>
+      <input class="govuk-input" id="title" name="title" type="text" value="{{ caseItem.title or '' }}" required>
+    </div>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="description">
+        Description
+      </label>
+      <textarea class="govuk-textarea" id="description" name="description" rows="5">{{ caseItem.description or '' }}</textarea>
+    </div>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="status">
+        Status
+      </label>
+      <select class="govuk-select" id="status" name="status" required>
+        <option value="">Select a status</option>
+        <option value="TODO" {{ 'selected' if caseItem.status == 'TODO' else '' }}>Open</option>
+        <option value="IN_PROGRESS" {{ 'selected' if caseItem.status == 'IN_PROGRESS' else '' }}>In Progress</option>
+        <option value="DONE" {{ 'selected' if caseItem.status == 'DONE' else '' }}>Closed</option>
+      </select>
+    </div>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="dueDateTime">
+        Due Date and Time
+      </label>
+      <input class="govuk-input" id="dueDateTime" name="dueDateTime" type="datetime-local" value="{{ caseItem.dueDateTime or '' }}">
+    </div>
+
+    <div class="govuk-form-group">
+      <button class="govuk-button" type="submit">
+        Save Case
+      </button>
+    </div>
+
+  </form>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "template.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% block content %}
+  <div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-one-half">
+      <h1 class="govuk-heading-xl govuk-!-margin-0">All cases</h1>
+    </div>
+    <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+      {{ govukButton({
+        text: "Create new case",
+        href: "/cases/new",
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
+  </div>
+
+  {% if cases and cases.length %}
+    {% set tableHead = [
+      { text: "Case number" },
+      { text: "Title" },
+      { text: "Status" },
+      { text: "Due date" },
+      { text: "Actions" }
+    ] %}
+
+    {% set tableRows = [] %}
+    {% for c in cases %}
+      {% set _ = tableRows.push([
+        { text: c.caseNumber },
+        { text: c.title },
+        { text: c.status },
+        { text: (c.dueDateTime | date("YYYY-MM-DD")) },
+        { html: '<a href="/cases/' ~ c.id ~ '" class="govuk-link">View</a>' }
+      ]) %}
+    {% endfor %}
+
+    {{ govukTable({
+      head: tableHead,
+      rows: tableRows
+    }) }}
+  {% else %}
+    <p class="govuk-body">There are no cases to show.</p>
+  {% endif %}
+{% endblock %}

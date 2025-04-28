@@ -1,0 +1,64 @@
+{% extends "template.njk" %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Case Details</h1>
+
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Case Number</dt>
+      <dd class="govuk-summary-list__value">{{ caseItem.caseNumber }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Title</dt>
+      <dd class="govuk-summary-list__value">{{ caseItem.title }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Description</dt>
+      <dd class="govuk-summary-list__value">{{ caseItem.description }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Due Date</dt>
+      <dd class="govuk-summary-list__value">{{ caseItem.dueDateTime }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Current Status</dt>
+      <dd class="govuk-summary-list__value">{{ caseItem.status }}</dd>
+    </div>
+  </dl>
+
+  <h2 class="govuk-heading-m">Update Status</h2>
+
+  <div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-column-one-half">
+      <form method="POST" action="{{ action }}" class="govuk-form-group">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="status">Status</label>
+          <select class="govuk-select" id="status" name="status" required>
+            <option value="">Select a status</option>
+            <option value="TODO" {{ 'selected' if caseItem.status == 'TODO' else '' }}>To Do</option>
+            <option value="IN_PROGRESS" {{ 'selected' if caseItem.status == 'IN_PROGRESS' else '' }}>In Progress</option>
+            <option value="DONE" {{ 'selected' if caseItem.status == 'DONE' else '' }}>Done</option>
+          </select>
+        </div>
+
+        <button class="govuk-button govuk-!-margin-top-2" type="submit">
+          Update Status
+        </button>
+      </form>
+    </div>
+
+    <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+      <form method="POST" action="/cases/{{ caseItem.id }}/delete" 
+            onsubmit="return confirm('Are you sure you want to delete this case?');" 
+            class="govuk-form-group govuk-!-margin-top-8">
+        <button class="govuk-button govuk-button--warning" type="submit">
+          Delete Case
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="govuk-form-group govuk-!-margin-top-6">
+    <a href="/cases" class="govuk-link">Back to all cases</a>
+  </div>
+{% endblock %}
