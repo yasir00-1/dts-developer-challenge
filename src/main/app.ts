@@ -1,4 +1,9 @@
 import * as path from 'path';
+import { glob } from 'glob';
+
+import mountHomeRoute from './routes/home';
+import mountCaseRoute from './routes/cases';
+
 
 import { HTTPError } from './HttpError';
 import { Nunjucks } from './modules/nunjucks';
@@ -6,7 +11,7 @@ import { Nunjucks } from './modules/nunjucks';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import { glob } from 'glob';
+
 import favicon from 'serve-favicon';
 
 const { setupDev } = require('./development');
@@ -29,15 +34,22 @@ app.use((req, res, next) => {
   next();
 });
 
-glob
-  .sync(__dirname + '/routes/**/*.+(ts|js)')
-  .map(filename => require(filename))
-  .forEach(route => route.default(app));
+mountHomeRoute(app);
+mountCaseRoute(app);
+
+
+const routesDir = path.join(__dirname, 'routes');
+glob.sync(path.join(routesDir, '**/*.+(ts|js)'), { absolute: true })
+  .forEach((file) => {
+    const mod = require(file);
+    if (mod.default) mod.default(app);
+    else console.warn(`no default export in ${file}`);
+  });
 
 setupDev(app, developmentMode);
 
 // error handler
-app.use((err: HTTPError, req: express.Request, res: express.Response) => {
+app.use((err: HTTPError, req: express.Request, res: express.Response,  next: express.NextFunction) => {
   console.log(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
