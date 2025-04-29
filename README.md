@@ -14,3 +14,59 @@ To run the frontend it should be the same as the original:
 2) `yarn webpack`
 3) `yarn start:dev`
 
+## API endpoints
+
+All the endpoints are routed to `http://localhost:400`
+
+### List all cases
+```
+GET /cases
+```
+Expect a 200 response with JSON array of cases formatted like this:
+
+```json
+[
+  {
+    "id": "uuid-x",
+    "caseNumber": "case-01",
+    "title": "Example case",
+    "description": "details..…",
+    "status": "TODO",
+    "dueDateTime": "2025-05-01T15:00:00Z"
+  },
+]
+```
+
+### Create a new case
+
+```
+POST /cases
+Content-Type: application/json
+```
+
+Body must contain all fields except `description`
+
+| Field         | Type                          | Required | Notes                                          |
+|---------------|-------------------------------|:--------:|------------------------------------------------|
+| caseNumber    | `string`                      |   Yes    | NOT assigned automatically|
+| title         | `string`                      |   Yes    ||
+| description   | `string`                      |    No    | OPTIONAL|
+| status        | `string` (enum)               |   Yes    | Either one of `TODO`, `IN_PROGRESS`, `DONE` |
+| dueDateTime   | `string` (ISO 8601 date-time) |   Yes    | Format `YYYY-MM-DDTHH:MM` (e.g. `2025-05-01T15:00`) |
+
+Expect a 201 on success, 401 if a required field is missing and/or invalid
+
+
+### Update a case's status
+
+```
+GET /cases/{id}/status?status={TODO|IN_PROGRESS|DONE}
+```
+Expect either a 200 for success, or a 404 error if no case with that id
+
+
+### Deleting a case
+
+```
+DELETE /cases/{id}
+```
