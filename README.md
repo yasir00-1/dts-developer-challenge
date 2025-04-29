@@ -16,7 +16,7 @@ To run the frontend it should be the same as the original:
 
 ## API endpoints
 
-All the endpoints are routed to `http://localhost:400`
+All the endpoints are routed to `http://localhost:4000`
 
 ### List all cases
 ```
